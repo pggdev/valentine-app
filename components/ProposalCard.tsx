@@ -50,11 +50,11 @@ const ProposalCard: React.FC<ProposalCardProps> = ({ name, interactive = true, o
                             </div>
                         </div>
 
-                        <h1 className="text-2xl font-bold text-gray-800 mb-12">
+                        <h1 className="text-2xl font-bold text-gray-800 pb-8">
                             {name}, will you be my <span className="text-pink-500">valentine?</span>
                         </h1>
 
-                        <div className="flex items-center justify-center gap-8 relative h-20">
+                        <div className="flex items-center justify-center gap-6 relative h-20">
                             <button
                                 onClick={handleYesClick}
                                 className="px-8 py-3 bg-pink-500 text-white font-bold rounded-full text-xl hover:bg-pink-600 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
