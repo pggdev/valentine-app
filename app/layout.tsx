@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google"; // Importing a cute rounded font
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react"
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({
         className={`${nunito.className} antialiased`}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
