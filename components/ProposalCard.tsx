@@ -80,7 +80,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({ name, interactive = true, o
                     </>
                 ) : (
                     <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                        <div className="text-8xl mb-6 animate-pulse">
+                        <div className="text-7xl mb-6 animate-pulse">
                             💖🎉🥰
                         </div>
                         <h2 className="text-4xl font-bold text-pink-600 mb-4">
