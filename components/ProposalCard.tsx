@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -13,15 +13,41 @@ interface ProposalCardProps {
 const ProposalCard: React.FC<ProposalCardProps> = ({ name, interactive = true, onYes }) => {
     const [noButtonPosition, setNoButtonPosition] = useState({ x: 0, y: 0 });
     const [accepted, setAccepted] = useState(false);
+    const buttonContainerRef = useRef<HTMLDivElement>(null);
+    const noButtonRef = useRef<HTMLButtonElement>(null);
 
-    // Function to move the "No" button to a random position
+    // Function to move the "No" button to a random position within the container
     const moveNoButton = () => {
         if (!interactive || accepted) return;
 
-        // Calculate random position within a reasonable range
-        // We want it to stay somewhat visible but jump away from cursor
-        const x = (Math.random() - 0.5) * 400; // -200 to 200
-        const y = (Math.random() - 0.5) * 400; // -200 to 200
+        const container = buttonContainerRef.current;
+        const button = noButtonRef.current;
+
+        if (!container || !button) {
+            // Fallback to smaller range if refs not available
+            const x = (Math.random() - 0.5) * 100;
+            const y = (Math.random() - 0.5) * 100;
+            setNoButtonPosition({ x, y });
+            return;
+        }
+
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = button.getBoundingClientRect();
+
+        // Calculate the maximum movement range to keep button inside container
+        // We need to account for the button's initial position relative to the container
+        const buttonInitialX = buttonRect.left - containerRect.left - noButtonPosition.x;
+        const buttonInitialY = buttonRect.top - containerRect.top - noButtonPosition.y;
+
+        // Calculate bounds: how far the button can move in each direction
+        const maxLeft = -buttonInitialX + 10; // 10px padding
+        const maxRight = containerRect.width - buttonInitialX - buttonRect.width - 10;
+        const maxTop = -buttonInitialY + 10;
+        const maxBottom = containerRect.height - buttonInitialY - buttonRect.height - 10;
+
+        // Generate random position within bounds
+        const x = maxLeft + Math.random() * (maxRight - maxLeft);
+        const y = maxTop + Math.random() * (maxBottom - maxTop);
 
         setNoButtonPosition({ x, y });
     };
@@ -38,7 +64,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({ name, interactive = true, o
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-pink-100 p-4 text-center">
-            <div className="bg-white/80 backdrop-blur-sm p-10 rounded-3xl shadow-xl max-w-lg w-full border border-pink-200">
+            <div ref={buttonContainerRef} className="bg-white/80 backdrop-blur-sm p-10 rounded-3xl shadow-xl max-w-lg w-full border border-pink-200 relative overflow-hidden">
                 {!accepted ? (
                     <>
                         <div className="mb-8">
@@ -54,7 +80,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({ name, interactive = true, o
                             {name}, will you be my <span className="text-pink-500">valentine?</span>
                         </h1>
 
-                        <div className="flex items-center justify-center gap-6 relative h-20">
+                        <div className="flex items-center justify-center gap-6 relative h-20 w-full">
                             <button
                                 onClick={handleYesClick}
                                 className="px-8 py-3 bg-pink-500 text-white font-bold rounded-full text-xl hover:bg-pink-600 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
@@ -63,12 +89,12 @@ const ProposalCard: React.FC<ProposalCardProps> = ({ name, interactive = true, o
                             </button>
 
                             <motion.button
+                                ref={noButtonRef}
                                 animate={noButtonPosition}
                                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                 onMouseEnter={moveNoButton}
                                 onClick={moveNoButton} // Also move on click just in case
-                                className="px-8 py-3 bg-gray-200 text-gray-700 font-bold rounded-full text-xl hover:bg-gray-300 transition-colors absolute"
-                                style={{ position: 'relative' }} // Changed to relative in flex container but motion handles x/y translate
+                                className="px-8 py-3 bg-gray-200 text-gray-700 font-bold rounded-full text-xl hover:bg-gray-300 transition-colors"
                             >
                                 No
                             </motion.button>

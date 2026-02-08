@@ -19,7 +19,7 @@ export default function Home() {
     <div className="flex flex-col md:flex-row min-h-screen">
       {/* Editor Section */}
       <div className="w-full md:w-1/3 p-8 bg-gray-50 border-r border-gray-200 shadow-md z-10 flex flex-col justify-center">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center md:text-left">
           Create Your Valentine <span className="text-pink-500 ">Proposal 💖</span>
         </h1>
 
